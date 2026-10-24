@@ -1,0 +1,287 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{figures/}}
+
+\title{\textbf{SentiBias Audit}\\[4pt]
+\large Auditing Multilingual Sentiment Models for Dialect, Gender and Code-Switching Bias\\[6pt]
+\normalsize AI Project --- Deliverable 1: Problem Definition \& Data Foundations}
+\author{Saad Jahangir \and Talmeez ur Rehman \and Muhammad Yaseen Asif}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+SentiBias Audit is a research project (Track B) that tests multilingual sentiment models for
+bias across dialects, gender-coded names, and code-switched Roman Urdu--English text, and then
+applies mitigation methods to reduce the measured performance gaps. This first deliverable
+defines the problem (Phase~1) and builds a working, data-centric pipeline (Phase~2): three
+public datasets are collected with logged download scripts, cleaned (missing values, duplicates,
+outliers), normalised, encoded and scaled, and explored through EDA charts. All code is in the
+\texttt{data\_scripts/} folder of the repository.
+\end{abstract}
+
+% ---------------------------------------------------------------------------
+\section{Phase 1: Problem Definition}
+
+\subsection{Problem Statement}
+Sentiment analysis models are deployed at scale for content moderation, brand monitoring, customer
+support triage and social-media analytics. Most of these models are trained and evaluated on
+standard English, yet their outputs are applied to users who write in other language varieties.
+Two groups are especially affected in Pakistan and the wider South-Asian diaspora:
+
+\begin{itemize}
+  \item \textbf{Roman Urdu and code-switched writers.} A very large share of informal online
+        Urdu is written in Latin script (``Roman Urdu'') with no standard spelling
+        (\emph{nahi / nhi / nahin}) and is frequently mixed with English words within a single
+        sentence. Models that have never seen this variety tend to default to \emph{neutral} or
+        produce unstable predictions, so the opinions of these users are systematically
+        mis-measured.
+  \item \textbf{People referred to by gender-coded names.} Prior work (Kiritchenko \& Mohammad,
+        2018) showed that many sentiment systems assign different sentiment intensity to two
+        sentences that differ only in a first name (\emph{``Amanda feels angry''} vs.\
+        \emph{``Alonzo feels angry''}). Such differences are not caused by the text's meaning and
+        constitute an unfair, measurable bias.
+\end{itemize}
+
+The real-world pain point is therefore that a sentiment model can be \emph{accurate on average}
+while being \emph{unreliable for specific language varieties and demographic groups}. These gaps
+are invisible in a single accuracy number and are rarely reported by model providers. SentiBias
+Audit quantifies these gaps on multilingual transformer sentiment models and tests whether
+standard mitigation methods (data augmentation, re-weighting, counterfactual fine-tuning) reduce
+them.
+
+\subsection{Target Audience}
+\begin{itemize}
+  \item \textbf{Research gap.} Bias audits of sentiment analysis exist for English gender/race
+        (EEC) and for a few high-resource languages, but there is no systematic audit that
+        combines (i) Roman Urdu, (ii) Roman Urdu--English code-switching and (iii) gender-coded
+        names, nor one that evaluates mitigation methods on all three dimensions together. This
+        project fills that gap for the low-resource Roman Urdu setting.
+  \item \textbf{Practitioners.} NLP engineers and product teams in Pakistan deploying off-the-shelf
+        multilingual sentiment models (e.g.\ for Urdu-speaking customers) who need to know
+        \emph{where} a model fails before trusting its output.
+  \item \textbf{Fairness researchers and educators} who need a reproducible pipeline and a
+        reusable, cleaned evaluation set for South-Asian code-switched text.
+\end{itemize}
+
+\subsection{AI Justification}
+A rule-based or lexicon-based approach is not viable for this problem for four technical reasons:
+
+\begin{enumerate}
+  \item \textbf{Open vocabulary with no orthographic standard.} Roman Urdu has no fixed spelling;
+        the same word appears in dozens of surface forms (\emph{acha, achha, acha, aCha}). A
+        hand-written lexicon can never enumerate these variants, whereas sub-word tokenisation and
+        learned embeddings in neural models generalise across spellings from data.
+  \item \textbf{Context-dependent polarity.} Sentiment is compositional (\emph{``bilkul bhi acha
+        nahi''} = not good at all). Negation, sarcasm and intensifiers interact in ways that
+        require learned contextual representations (transformers) rather than fixed rules.
+  \item \textbf{Code-switching.} Within one sentence the language can change at any token
+        boundary. A rule system would need separate language identification, separate lexicons
+        and merging logic; a multilingual deep model handles the mixed sequence natively.
+  \item \textbf{The object of study is a learned model.} The bias we audit emerges from the
+        statistical patterns a model absorbs from training data (e.g.\ name--sentiment
+        associations). Measuring and mitigating it (re-weighting, counterfactual augmentation,
+        fine-tuning) is intrinsically a machine-learning problem; there is no rule-based
+        counterpart.
+\end{enumerate}
+Hence Machine Learning---specifically pre-trained multilingual transformers fine-tuned for
+sentiment classification---is necessary both as the subject of the audit and as the means of
+mitigation.
+
+% ---------------------------------------------------------------------------
+\section{Phase 2: Data Acquisition \& Preprocessing}
+
+\subsection{Collection}
+Three public datasets were selected, one per bias dimension (Table~\ref{tab:datasets}).
+The script \path{data_scripts/download_data.py} fetches every file over HTTP with the
+\texttt{requests} library, unzips the EEC archive, and appends one line per file (timestamp,
+HTTP status, byte count, URL) to the log file \path{data/raw/download_log.txt} as evidence of
+collection. Raw data is git-ignored and is regenerated by re-running the script.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{llrl}
+\toprule
+\textbf{Dataset} & \textbf{Bias dimension} & \textbf{Raw rows} & \textbf{Source} \\
+\midrule
+Roman Urdu Data Set & Roman Urdu, code-switching & 20,229 & UCI ML Repository \#458 \\
+TweetEval Sentiment & English baseline (tweets)  & 59,899 & Cardiff NLP, GitHub \\
+Equity Evaluation Corpus & Gender-coded names    & 8,640  & Kiritchenko \& Mohammad 2018 \\
+\bottomrule
+\end{tabular}
+\caption{Datasets collected in Phase 2.}
+\label{tab:datasets}
+\end{table}
+
+\noindent Excerpt of the download log produced by the script:
+{\footnotesize
+\begin{verbatim}
+[2026-10-24 12:41:33] OK    roman_urdu.csv <- https://archive.ics.uci.edu/...
+                            (HTTP 200, 1628349 bytes)
+[2026-10-24 12:41:37] OK    tweeteval_train_text.txt <- https://raw.githubusercontent.com/...
+                            (HTTP 200, 4970029 bytes)
+[2026-10-24 12:41:56] OK    eec.zip <- https://saifmohammad.com/WebDocs/EEC/...
+                            (HTTP 200, 1669592 bytes)
+[2026-10-24 12:41:56] UNZIP eec.zip -> ['Equity-Evaluation-Corpus/...csv', ...]
+\end{verbatim}}
+
+\paragraph{Raw data observations.} The Roman Urdu CSV has no header, a third column that is
+empty except for 7 junk cells, one row with no text, 564 duplicated texts, and a typo label
+``\texttt{Neative}'' (1 row). TweetEval ships text and labels in separate aligned files with
+integer labels (0/1/2) and contains 28 duplicate tweets. EEC has no duplicates but 2,880 missing
+\texttt{Race} values (rows that use noun phrases such as \emph{``my son''} instead of names) and
+240 missing \texttt{Emotion} values (neutral templates). Figure~\ref{fig:raw} shows the raw class
+distributions, including the typo label.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{raw_class_distribution.png}
+\caption{Raw class distribution of the two labelled corpora before cleaning. The
+``Neative'' bar (1 row) is the label typo found in the Roman Urdu file.}
+\label{fig:raw}
+\end{figure}
+
+\subsection{Cleaning Implementation}
+The script \path{data_scripts/clean_data.py} applies the same three steps to each dataset and
+writes one tidy CSV per dataset plus a combined \path{sentiment_master.csv} with the unified
+schema
+\begin{center}
+\small\texttt{text, label, language, source, split, gender, code\_switched,}\\
+\small\texttt{n\_tokens, n\_chars, english\_word\_ratio}
+\end{center}
+A JSON summary of every step is saved to \path{data/processed/cleaning_summary.json}.
+
+\begin{enumerate}
+  \item \textbf{Missing values.} Rows with a null text or label are dropped; whitespace is
+        stripped and collapsed and empty strings removed. The junk third column of the Roman
+        Urdu file is dropped and the \texttt{Neative} label is corrected to \texttt{Negative}.
+        In EEC the missing \texttt{Race}/\texttt{Emotion} cells are semantically meaningful, so
+        they are imputed with the category \texttt{none} rather than dropped; the emotion is then
+        mapped to a sentiment label (joy $\to$ positive; anger, sadness, fear $\to$ negative;
+        none $\to$ neutral).
+  \item \textbf{Duplicates.} Exact duplicate texts are removed, keeping the first occurrence.
+  \item \textbf{Outliers.} Sample length in tokens is the main outlier dimension (the raw Roman
+        Urdu file ranges from 1 to 2,017 characters). Rows above Tukey's outer fence
+        $Q_3 + 3\,\mathrm{IQR}$ on token count (fence = 50 tokens for Roman Urdu, 43 for
+        TweetEval, 13 for EEC) or with zero tokens are removed.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Dataset} & \textbf{Raw} & \textbf{After missing} & \textbf{After duplicates} & \textbf{After outliers} \\
+\midrule
+Roman Urdu & 20,229 & 20,116 & 19,582 & 19,187 \\
+TweetEval  & 59,899 & 59,899 & 59,869 & 59,869 \\
+EEC        & 8,640  & 8,640  & 8,640  & 8,640 \\
+\midrule
+\textbf{Master} & 88,768 & & & \textbf{87,696} \\
+\bottomrule
+\end{tabular}
+\caption{Row counts after each cleaning step.}
+\label{tab:cleaning}
+\end{table}
+
+\paragraph{Code-switching flag.} For the Roman Urdu corpus a lexicon heuristic marks a sample as
+code-switched when it contains at least two words from a curated list of unambiguous English
+words (ambiguous tokens such as \emph{a, to, me, he, is} that are also valid Roman Urdu words are
+excluded) and is not entirely English. 959 samples (5.0\%) are flagged, which forms the
+code-switched evaluation subset for the audit.
+
+\subsection{Feature Strategy}
+The script \path{data_scripts/feature_eda.py} implements the feature pipeline and saves the
+outputs to \path{data/processed/}:
+
+\begin{description}
+  \item[Normalisation (text).] Lowercasing; URLs replaced by \texttt{URL}; user mentions by
+        \texttt{@user}; digits by \texttt{NUM}; punctuation removed; whitespace collapsed. Stored
+        as \texttt{text\_norm}.
+  \item[Encoding.] The target is label-encoded with \texttt{sklearn.LabelEncoder}
+        (negative = 0, neutral = 1, positive = 2). The categorical variables \texttt{language}
+        and \texttt{gender} are one-hot encoded (5 columns). The text is encoded as a TF-IDF
+        matrix (unigrams + bigrams, 5,000 features, \texttt{min\_df}=2) and saved as
+        \texttt{features\_tfidf.npz}; this is the baseline representation used before moving to
+        transformer embeddings in later deliverables.
+  \item[Scaling.] The numeric features \texttt{n\_tokens}, \texttt{n\_chars} and
+        \texttt{english\_word\_ratio} are scaled twice: z-score standardisation
+        (\texttt{StandardScaler}, suffix \texttt{\_std}) for distance/linear models and min--max
+        scaling to $[0,1]$ (\texttt{MinMaxScaler}, suffix \texttt{\_minmax}) for neural
+        inputs. The scaled columns, one-hot columns and encoded label form
+        \texttt{features\_tabular.csv} (13 columns, 87,696 rows).
+\end{description}
+
+\subsection{Exploratory Data Analysis}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{clean_class_distribution.png}
+\caption{Class distribution per source after cleaning. Neutral dominates both the Roman Urdu and
+TweetEval corpora; EEC is negative-heavy by construction (three of its four emotions are
+negative), which will need to be accounted for when reporting per-group accuracy.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{text_length_distribution.png}
+\caption{Token-count density by language. Roman Urdu samples are short (median 9 tokens) and
+skewed, whereas English tweets cluster around 18--23 tokens. This length mismatch is a potential
+confound for cross-language comparisons.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{code_switching_by_label.png}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{eec_gender_balance.png}
+\end{minipage}
+\caption{Left: share of code-switched Roman Urdu samples by label---positive samples switch to
+English almost twice as often as negative ones (6.4\% vs.\ 3.5\%), so code-switching is
+correlated with the label and must be controlled for. Right: EEC is exactly balanced between
+male and female names within every label, which is what makes paired counterfactual evaluation
+possible.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{feature_correlation.png}
+\caption{Pearson correlation of the tabular features. \texttt{n\_tokens} and \texttt{n\_chars}
+are nearly collinear (0.95), so only one will be used as a covariate. The $-0.99$ between
+\texttt{english\_word\_ratio} and \texttt{language\_roman\_urdu} is expected because the ratio is
+constant (1.0) for English rows. The label is only weakly related to length (0.13) and to the
+female-name indicator ($-0.17$, driven by EEC's label composition).}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\section{Repository Summary}
+The GitHub repository contains \texttt{README.md}, a \texttt{.gitignore} that excludes all raw
+and processed data, the \texttt{data\_scripts/} folder with the three Phase~2 scripts
+(\texttt{download\_data.py}, \texttt{clean\_data.py}, \texttt{feature\_eda.py}),
+\texttt{requirements.txt}, and this report with its figures under \texttt{report/}.
+Running the three scripts in order reproduces every number and chart in this document.
+
+\begin{thebibliography}{9}
+\bibitem{uci} Sharf, Z. and Rahman, S. U. (2018). \emph{Roman Urdu Data Set}. UCI Machine
+  Learning Repository, dataset 458. \url{https://archive.ics.uci.edu/dataset/458/roman+urdu+data+set}
+\bibitem{tweeteval} Barbieri, F., Camacho-Collados, J., Espinosa-Anke, L. and Neves, L. (2020).
+  TweetEval: Unified Benchmark and Comparative Evaluation for Tweet Classification.
+  \emph{Findings of EMNLP 2020}. \url{https://github.com/cardiffnlp/tweeteval}
+\bibitem{eec} Kiritchenko, S. and Mohammad, S. M. (2018). Examining Gender and Race Bias in Two
+  Hundred Sentiment Analysis Systems. \emph{Proceedings of *SEM 2018}.
+  \url{https://saifmohammad.com/WebPages/Biases-SA.html}
+\end{thebibliography}
+
+\end{document}
