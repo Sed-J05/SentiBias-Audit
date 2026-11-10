@@ -1,0 +1,122 @@
+{
+  "TF-IDF + LogReg": {
+    "eec_overall": {
+      "accuracy": 0.3637,
+      "macro_f1": 0.3389
+    },
+    "gender (female - male)": {
+      "n_pairs": 144,
+      "mean_score_female": 0.0901,
+      "mean_score_male": 0.0197,
+      "mean_gap": 0.0704,
+      "mean_abs_gap": 0.0717,
+      "share_pairs_a_higher": 0.9444,
+      "t_statistic": 7.087,
+      "p_value": 5.78e-11,
+      "significant_at_0.05": true,
+      "performance": {
+        "female": {
+          "n": 4320,
+          "accuracy": 0.3148,
+          "macro_f1": 0.295,
+          "share_pred_positive": 0.4313,
+          "share_pred_negative": 0.1229
+        },
+        "male": {
+          "n": 4320,
+          "accuracy": 0.4125,
+          "macro_f1": 0.38,
+          "share_pred_positive": 0.3421,
+          "share_pred_negative": 0.2384
+        }
+      }
+    },
+    "race (African-American - European)": {
+      "n_pairs": 144,
+      "mean_score_African-American": 0.0504,
+      "mean_score_European": 0.0303,
+      "mean_gap": 0.02,
+      "mean_abs_gap": 0.0206,
+      "share_pairs_a_higher": 0.9722,
+      "t_statistic": 19.334,
+      "p_value": 9.93e-42,
+      "significant_at_0.05": true,
+      "performance": {
+        "African-American": {
+          "n": 2880,
+          "accuracy": 0.2812,
+          "macro_f1": 0.2887,
+          "share_pred_positive": 0.3653,
+          "share_pred_negative": 0.0861
+        },
+        "European": {
+          "n": 2880,
+          "accuracy": 0.351,
+          "macro_f1": 0.3461,
+          "share_pred_positive": 0.3326,
+          "share_pred_negative": 0.1715
+        }
+      }
+    }
+  },
+  "MiniLM + MLP": {
+    "eec_overall": {
+      "accuracy": 0.9296,
+      "macro_f1": 0.8078
+    },
+    "gender (female - male)": {
+      "n_pairs": 144,
+      "mean_score_female": -0.3636,
+      "mean_score_male": -0.3292,
+      "mean_gap": -0.0344,
+      "mean_abs_gap": 0.0369,
+      "share_pairs_a_higher": 0.0972,
+      "t_statistic": -11.055,
+      "p_value": 6.43e-21,
+      "significant_at_0.05": true,
+      "performance": {
+        "female": {
+          "n": 4320,
+          "accuracy": 0.9389,
+          "macro_f1": 0.8216,
+          "share_pred_positive": 0.2537,
+          "share_pred_negative": 0.6785
+        },
+        "male": {
+          "n": 4320,
+          "accuracy": 0.9204,
+          "macro_f1": 0.7951,
+          "share_pred_positive": 0.2613,
+          "share_pred_negative": 0.6581
+        }
+      }
+    },
+    "race (African-American - European)": {
+      "n_pairs": 144,
+      "mean_score_African-American": -0.3352,
+      "mean_score_European": -0.3322,
+      "mean_gap": -0.003,
+      "mean_abs_gap": 0.0383,
+      "share_pairs_a_higher": 0.625,
+      "t_statistic": -0.64,
+      "p_value": 0.523,
+      "significant_at_0.05": false,
+      "performance": {
+        "African-American": {
+          "n": 2880,
+          "accuracy": 0.9167,
+          "macro_f1": 0.7882,
+          "share_pred_positive": 0.2604,
+          "share_pred_negative": 0.6556
+        },
+        "European": {
+          "n": 2880,
+          "accuracy": 0.9313,
+          "macro_f1": 0.8224,
+          "share_pred_positive": 0.2701,
+          "share_pred_negative": 0.6635
+        }
+      }
+    }
+  }
+}

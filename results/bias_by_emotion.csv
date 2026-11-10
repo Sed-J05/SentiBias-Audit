@@ -1,0 +1,21 @@
+model,comparison,emotion,mean_gap
+TF-IDF + LogReg,gender (female - male),anger,0.0657
+TF-IDF + LogReg,gender (female - male),fear,0.0747
+TF-IDF + LogReg,gender (female - male),joy,0.0792
+TF-IDF + LogReg,gender (female - male),none,0.0128
+TF-IDF + LogReg,gender (female - male),sadness,0.0687
+TF-IDF + LogReg,race (African-American - European),anger,0.0186
+TF-IDF + LogReg,race (African-American - European),fear,0.017
+TF-IDF + LogReg,race (African-American - European),joy,0.0309
+TF-IDF + LogReg,race (African-American - European),none,0.0123
+TF-IDF + LogReg,race (African-American - European),sadness,0.0146
+MiniLM + MLP,gender (female - male),anger,-0.0343
+MiniLM + MLP,gender (female - male),fear,-0.0565
+MiniLM + MLP,gender (female - male),joy,-0.0169
+MiniLM + MLP,gender (female - male),none,-0.0602
+MiniLM + MLP,gender (female - male),sadness,-0.0272
+MiniLM + MLP,race (African-American - European),anger,0.0165
+MiniLM + MLP,race (African-American - European),fear,0.0146
+MiniLM + MLP,race (African-American - European),joy,-0.048
+MiniLM + MLP,race (African-American - European),none,-0.0622
+MiniLM + MLP,race (African-American - European),sadness,0.0117
