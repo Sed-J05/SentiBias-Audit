@@ -1,0 +1,78 @@
+{
+  "TF-IDF + LogReg": {
+    "overall": {
+      "n": 11859,
+      "accuracy": 0.621,
+      "macro_precision": 0.612,
+      "macro_recall": 0.6334,
+      "macro_f1": 0.6159,
+      "auc_roc_macro_ovr": 0.8062
+    },
+    "per_class": {
+      "negative": {
+        "precision": 0.4867,
+        "recall": 0.6733,
+        "f1": 0.565,
+        "support": 2470
+      },
+      "neutral": {
+        "precision": 0.6862,
+        "recall": 0.5705,
+        "f1": 0.623,
+        "support": 5385
+      },
+      "positive": {
+        "precision": 0.6631,
+        "recall": 0.6566,
+        "f1": 0.6598,
+        "support": 4004
+      }
+    },
+    "confusion_pairs": {
+      "neutral -> negative": 1247,
+      "neutral -> positive": 1066,
+      "positive -> neutral": 868,
+      "negative -> neutral": 537,
+      "positive -> negative": 507,
+      "negative -> positive": 270
+    }
+  },
+  "MiniLM + MLP": {
+    "overall": {
+      "n": 11859,
+      "accuracy": 0.6425,
+      "macro_precision": 0.6326,
+      "macro_recall": 0.6521,
+      "macro_f1": 0.6377,
+      "auc_roc_macro_ovr": 0.8282
+    },
+    "per_class": {
+      "negative": {
+        "precision": 0.5235,
+        "recall": 0.6903,
+        "f1": 0.5954,
+        "support": 2470
+      },
+      "neutral": {
+        "precision": 0.6902,
+        "recall": 0.6115,
+        "f1": 0.6485,
+        "support": 5385
+      },
+      "positive": {
+        "precision": 0.6842,
+        "recall": 0.6546,
+        "f1": 0.669,
+        "support": 4004
+      }
+    },
+    "confusion_pairs": {
+      "neutral -> negative": 1088,
+      "neutral -> positive": 1004,
+      "positive -> neutral": 919,
+      "negative -> neutral": 559,
+      "positive -> negative": 464,
+      "negative -> positive": 206
+    }
+  }
+}
