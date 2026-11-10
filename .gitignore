@@ -4,6 +4,13 @@ data/processed/
 *.csv
 *.zip
 *.npz
+*.npy
+# small result tables produced by src/ are kept in Git
+!results/*.csv
+
+# Model weights are hosted externally (see README)
+models/*.pt
+models/*.joblib
 
 # Python
 __pycache__/
