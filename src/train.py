@@ -74,14 +74,18 @@ def evaluate_split(model, X, y, loss_fn):
             f1_score(y.numpy(), pred.numpy(), average="macro"))
 
 
-def train_model(params, data, max_epochs=40, patience=4, verbose=True):
-    """Train one model; returns (best model, history list, best val macro-F1)."""
-    torch.manual_seed(SEED)
+def train_model(params, data, max_epochs=40, patience=4, verbose=True, seed=SEED):
+    """Train one model; returns (best model, history list, best val macro-F1).
+
+    patience=None turns early stopping off: all max_epochs are run and the weights
+    of the LAST epoch are kept (used by the ablation study).
+    """
+    torch.manual_seed(seed)
     X_tr, y_tr, _ = data["train"]
     X_va, y_va, _ = data["val"]
     model, loss_fn, optimizer = build_model(params, y_tr.numpy())
     loader = DataLoader(TensorDataset(X_tr, y_tr), batch_size=params["batch_size"],
-                        shuffle=True, generator=torch.Generator().manual_seed(SEED))
+                        shuffle=True, generator=torch.Generator().manual_seed(seed))
 
     history, best_f1, best_state, bad_epochs = [], -1.0, None, 0
     for epoch in range(1, max_epochs + 1):
@@ -92,7 +96,9 @@ def train_model(params, data, max_epochs=40, patience=4, verbose=True):
         if verbose:
             print(f"epoch {epoch:2d}  train loss {tr_loss:.4f} acc {tr_acc:.4f} | "
                   f"val loss {va_loss:.4f} acc {va_acc:.4f} macro-F1 {va_f1:.4f}")
-        if va_f1 > best_f1:
+        if patience is None:                       # no early stopping: keep last epoch
+            best_f1, best_state = va_f1, None
+        elif va_f1 > best_f1:
             best_f1, best_state, bad_epochs = va_f1, copy.deepcopy(model.state_dict()), 0
         else:
             bad_epochs += 1
@@ -100,7 +106,8 @@ def train_model(params, data, max_epochs=40, patience=4, verbose=True):
                 if verbose:
                     print(f"Early stopping at epoch {epoch} (best val macro-F1 {best_f1:.4f})")
                 break
-    model.load_state_dict(best_state)
+    if best_state is not None:
+        model.load_state_dict(best_state)
     return model, history, best_f1
 
 
@@ -148,10 +155,11 @@ def main():
     print(f"Saved model to models/sentiment_mlp.pt (best val macro-F1 {best_f1:.4f})")
 
 
-def load_trained_model():
-    ckpt = torch.load(os.path.join(MODELS, "sentiment_mlp.pt"), weights_only=False)
+def load_trained_model(filename="sentiment_mlp.pt"):
+    ckpt = torch.load(os.path.join(MODELS, filename), weights_only=False)
     p = ckpt["params"]
-    model = SentimentMLP(hidden=p["hidden"], dropout=p["dropout"])
+    model = SentimentMLP(in_dim=p.get("in_dim", 384), hidden=p["hidden"],
+                         dropout=p["dropout"], n_layers=p.get("n_layers", 2))
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
     return model

@@ -1,0 +1,25 @@
+variant,description,seed,epochs,val_macro_f1,test_macro_f1,test_f1_english,test_f1_roman_urdu
+Full model,final model from Deliverable 2,42,11,0.6462,0.6377,0.6707,0.535
+Full model,final model from Deliverable 2,43,9,0.6436,0.6404,0.6752,0.5339
+Full model,final model from Deliverable 2,44,15,0.6424,0.6307,0.6638,0.5253
+Linear head (no hidden layer),MLP replaced by one linear layer,42,24,0.6046,0.5971,0.6405,0.4556
+Linear head (no hidden layer),MLP replaced by one linear layer,43,31,0.6047,0.5994,0.6432,0.4566
+Linear head (no hidden layer),MLP replaced by one linear layer,44,21,0.6032,0.5968,0.641,0.4524
+1 hidden layer,second hidden layer removed,42,16,0.6441,0.6349,0.6739,0.5132
+1 hidden layer,second hidden layer removed,43,11,0.6384,0.6311,0.6712,0.506
+1 hidden layer,second hidden layer removed,44,15,0.6447,0.6376,0.6749,0.5184
+No dropout,dropout 0.2 -> 0,42,7,0.6406,0.6321,0.6682,0.5218
+No dropout,dropout 0.2 -> 0,43,9,0.6434,0.6364,0.6694,0.5369
+No dropout,dropout 0.2 -> 0,44,6,0.6427,0.6344,0.673,0.5169
+No class weights,plain cross-entropy,42,8,0.6434,0.6404,0.6772,0.5273
+No class weights,plain cross-entropy,43,7,0.6468,0.6377,0.6726,0.5346
+No class weights,plain cross-entropy,44,9,0.6477,0.6383,0.6734,0.5267
+No early stopping,"40 epochs, last epoch kept",42,40,0.6268,0.6172,0.6526,0.5075
+No early stopping,"40 epochs, last epoch kept",43,40,0.6237,0.6149,0.6488,0.5092
+No early stopping,"40 epochs, last epoch kept",44,40,0.6257,0.6148,0.6509,0.4989
+No Roman Urdu in training,train on English rows only,42,7,0.6002,0.602,0.6766,0.3451
+No Roman Urdu in training,train on English rows only,43,11,0.6048,0.607,0.6775,0.363
+No Roman Urdu in training,train on English rows only,44,16,0.6062,0.6026,0.6715,0.3778
+TF-IDF instead of MiniLM,"TF-IDF + SVD(384) input, same MLP",42,2,0.5605,0.5479,0.557,0.5029
+TF-IDF instead of MiniLM,"TF-IDF + SVD(384) input, same MLP",43,10,0.5677,0.5631,0.5674,0.5429
+TF-IDF instead of MiniLM,"TF-IDF + SVD(384) input, same MLP",44,6,0.5664,0.5612,0.5692,0.5277

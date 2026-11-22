@@ -14,6 +14,10 @@ SentimentMLP layers:
 
 Loss: class-weighted cross-entropy (weights = inverse class frequency in train)
 Optimizer: AdamW (Adam with decoupled weight decay)
+
+Phase 5 (ablation study) adds two options with defaults that give exactly the
+model above: n_layers (number of hidden layers: 2, 1 or 0 = linear head) and
+class_weighted (False = plain cross-entropy).
 """
 import numpy as np
 import torch
@@ -21,17 +25,14 @@ from torch import nn
 
 
 class SentimentMLP(nn.Module):
-    def __init__(self, in_dim=384, hidden=256, dropout=0.3, n_classes=3):
+    def __init__(self, in_dim=384, hidden=256, dropout=0.3, n_classes=3, n_layers=2):
         super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(in_dim, hidden),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden, hidden // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden // 2, n_classes),
-        )
+        sizes = [in_dim, hidden, hidden // 2][:n_layers + 1]   # hidden sizes: h, h/2
+        layers = []
+        for a, b in zip(sizes[:-1], sizes[1:]):
+            layers += [nn.Linear(a, b), nn.ReLU(), nn.Dropout(dropout)]
+        layers.append(nn.Linear(sizes[-1], n_classes))
+        self.net = nn.Sequential(*layers)
 
     def forward(self, x):
         return self.net(x)
@@ -46,8 +47,10 @@ def class_weights(y, n_classes=3):
 
 def build_model(params, y_train):
     """Create the model, the weighted loss and the optimizer from a hyperparameter dict."""
-    model = SentimentMLP(hidden=params["hidden"], dropout=params["dropout"])
-    loss_fn = nn.CrossEntropyLoss(weight=class_weights(y_train))
+    model = SentimentMLP(in_dim=params.get("in_dim", 384), hidden=params["hidden"],
+                         dropout=params["dropout"], n_layers=params.get("n_layers", 2))
+    weights = class_weights(y_train) if params.get("class_weighted", True) else None
+    loss_fn = nn.CrossEntropyLoss(weight=weights)
     optimizer = torch.optim.AdamW(model.parameters(), lr=params["lr"],
                                   weight_decay=params.get("weight_decay", 1e-4))
     return model, loss_fn, optimizer
