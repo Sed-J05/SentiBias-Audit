@@ -1,0 +1,16 @@
+model_a,model_b,group,f1_diff,diff_ci_low,diff_ci_high,bootstrap_p,only_a_correct,only_b_correct,mcnemar_p
+MiniLM + MLP,TF-IDF + LogReg,All test,0.0217,0.012,0.0318,0.0,1922,1667,2.22e-05
+MiniLM + MLP,TF-IDF + LogReg,English,0.0422,0.0306,0.0528,0.0,1459,1119,2.29e-11
+MiniLM + MLP,TF-IDF + LogReg,Roman Urdu,-0.0379,-0.0596,-0.016,0.0,463,548,0.00821
+MiniLM + MLP,Majority class,All test,0.4295,0.4196,0.4388,0.0,4326,2092,1.48e-174
+MiniLM + MLP,Majority class,English,0.461,0.4504,0.4726,0.0,3474,1537,5.51e-169
+MiniLM + MLP,Majority class,Roman Urdu,0.3314,0.3112,0.3514,0.0,852,555,2.37e-15
+MLP + language re-weighting,MiniLM + MLP,All test,-0.0039,-0.0096,0.0021,0.19,602,651,0.175
+MLP + language re-weighting,MiniLM + MLP,English,-0.0043,-0.0107,0.0024,0.216,417,458,0.176
+MLP + language re-weighting,MiniLM + MLP,Roman Urdu,0.0027,-0.0103,0.0157,0.68,185,193,0.719
+MLP + gender CDA,MiniLM + MLP,All test,-0.0061,-0.0116,-0.0005,0.034,547,605,0.093
+MLP + gender CDA,MiniLM + MLP,English,0.0019,-0.0044,0.0087,0.54,434,401,0.268
+MLP + gender CDA,MiniLM + MLP,Roman Urdu,-0.0323,-0.0446,-0.0195,0.0,113,204,3.61e-07
+MLP + re-weighting + CDA,MiniLM + MLP,All test,-0.0061,-0.0119,-0.0002,0.04,653,706,0.158
+MLP + re-weighting + CDA,MiniLM + MLP,English,-0.0095,-0.0161,-0.0032,0.006,423,500,0.0123
+MLP + re-weighting + CDA,MiniLM + MLP,Roman Urdu,0.0046,-0.0091,0.0189,0.496,230,206,0.271

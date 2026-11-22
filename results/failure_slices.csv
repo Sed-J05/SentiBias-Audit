@@ -1,0 +1,25 @@
+model,slice,n,error_rate,macro_f1
+TF-IDF + LogReg,"English, 1-5 tokens",92,0.2717,0.7285
+TF-IDF + LogReg,"English, 6-15 tokens",2516,0.3442,0.6296
+TF-IDF + LogReg,"English, >15 tokens",6373,0.3725,0.6237
+TF-IDF + LogReg,"English, with negation",1689,0.4435,0.5578
+TF-IDF + LogReg,"English, no negation",7292,0.345,0.6387
+TF-IDF + LogReg,"Roman Urdu, 1-5 tokens",693,0.3636,0.5865
+TF-IDF + LogReg,"Roman Urdu, 6-15 tokens",1391,0.4443,0.5588
+TF-IDF + LogReg,"Roman Urdu, >15 tokens",794,0.4534,0.5225
+TF-IDF + LogReg,"Roman Urdu, with negation",354,0.4859,0.4427
+TF-IDF + LogReg,"Roman Urdu, no negation",2524,0.4192,0.5784
+TF-IDF + LogReg,"Roman Urdu, code-switched",147,0.3605,0.6236
+TF-IDF + LogReg,"Roman Urdu, not code-switched",2731,0.431,0.5686
+MiniLM + MLP,"English, 1-5 tokens",92,0.3587,0.6377
+MiniLM + MLP,"English, 6-15 tokens",2516,0.3017,0.6824
+MiniLM + MLP,"English, >15 tokens",6373,0.3347,0.6643
+MiniLM + MLP,"English, with negation",1689,0.3884,0.6141
+MiniLM + MLP,"English, no negation",7292,0.3112,0.6793
+MiniLM + MLP,"Roman Urdu, 1-5 tokens",693,0.3535,0.531
+MiniLM + MLP,"Roman Urdu, 6-15 tokens",1391,0.4795,0.5167
+MiniLM + MLP,"Roman Urdu, >15 tokens",794,0.5076,0.4724
+MiniLM + MLP,"Roman Urdu, with negation",354,0.5113,0.4756
+MiniLM + MLP,"Roman Urdu, no negation",2524,0.4493,0.5403
+MiniLM + MLP,"Roman Urdu, code-switched",147,0.3878,0.6099
+MiniLM + MLP,"Roman Urdu, not code-switched",2731,0.4606,0.5297

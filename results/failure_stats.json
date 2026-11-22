@@ -1,0 +1,54 @@
+{
+  "label_noise_roman_urdu": {
+    "raw_rows": 20228,
+    "duplicated_texts": 284,
+    "duplicated_texts_with_conflicting_labels": 25,
+    "conflict_rate": 0.088,
+    "examples": {
+      ":)": [
+        "negative",
+        "neutral"
+      ],
+      "AR Tabba Sports Complex Me APMF Job Fair Ka Agaz Ho Gaya Hai": [
+        "neutral",
+        "positive"
+      ],
+      "Agar Kisi Ko Governor Raaj Lagana Hai To Laga Le Nisar Khoro PPP": [
+        "negative",
+        "neutral"
+      ],
+      "Aj Shab e Juma Hay": [
+        "neutral",
+        "positive"
+      ],
+      "Bilkul": [
+        "neutral",
+        "positive"
+      ],
+      "Bilkul sahi": [
+        "neutral",
+        "positive"
+      ],
+      "Haha": [
+        "neutral",
+        "positive"
+      ],
+      "Hahahah": [
+        "neutral",
+        "positive"
+      ]
+    }
+  },
+  "tokenizer_fragmentation_test": {
+    "english": {
+      "words": 165386,
+      "subword_tokens": 258020,
+      "tokens_per_word": 1.56
+    },
+    "roman_urdu": {
+      "words": 35691,
+      "subword_tokens": 55503,
+      "tokens_per_word": 1.555
+    }
+  }
+}
