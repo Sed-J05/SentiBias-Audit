@@ -1,0 +1,13 @@
+text,expected,type,TF-IDF + LogReg | pred,TF-IDF + LogReg | conf,TF-IDF + LogReg | score,MiniLM + MLP | pred,MiniLM + MLP | conf,MiniLM + MLP | score,MLP + re-weighting | pred,MLP + re-weighting | conf,MLP + re-weighting | score,MLP + CDA | pred,MLP + CDA | conf,MLP + CDA | score,MLP + re-weighting + CDA | pred,MLP + re-weighting + CDA | conf,MLP + re-weighting + CDA | score
+"I absolutely love the new update, great job!",positive,English,positive,0.988,0.985,positive,0.999,0.999,positive,0.997,0.997,positive,0.999,0.999,positive,0.998,0.998
+"Worst customer service ever, never ordering again.",negative,English,negative,0.976,-0.969,negative,0.997,-0.997,negative,0.991,-0.991,negative,0.998,-0.998,negative,0.995,-0.995
+The meeting has been moved to 5 pm on Friday.,neutral,English,neutral,0.639,0.2,neutral,0.925,-0.07,neutral,0.905,-0.078,neutral,0.973,-0.017,neutral,0.923,-0.065
+"Great, my flight got cancelled again. Just perfect.",negative,"English, sarcasm",positive,0.754,0.514,positive,0.958,0.938,positive,0.915,0.881,positive,0.944,0.921,positive,0.962,0.951
+"Yeh phone bohat acha hai, battery bhi zabardast hai",positive,Roman Urdu,positive,0.733,0.576,positive,0.409,0.163,positive,0.418,0.052,positive,0.429,0.14,positive,0.447,0.239
+Khana bilkul bekar tha aur service bhi slow thi,negative,Roman Urdu,positive,0.466,0.158,negative,0.74,-0.629,negative,0.769,-0.667,negative,0.797,-0.714,negative,0.781,-0.744
+Main kal Lahore ja raha hoon,neutral,Roman Urdu,neutral,0.522,-0.294,neutral,0.625,0.072,neutral,0.47,-0.22,neutral,0.455,0.086,neutral,0.587,-0.269
+Yeh drama acha nahi tha,negative,"Roman Urdu, negation",positive,0.508,0.175,neutral,0.438,0.166,positive,0.552,0.407,neutral,0.452,0.072,positive,0.635,0.54
+"Movie zabardast thi, I loved it",positive,Code-switched,positive,0.793,0.711,positive,0.981,0.981,positive,0.972,0.971,positive,0.979,0.978,positive,0.984,0.983
+"Delivery itni late thi, totally disappointed",negative,Code-switched,negative,0.467,-0.172,negative,0.895,-0.887,negative,0.842,-0.822,negative,0.91,-0.901,negative,0.791,-0.777
+Her presentation is scheduled for today.,neutral,Gender pair (female),neutral,0.465,-0.016,neutral,0.962,0.036,neutral,0.966,0.03,neutral,0.952,0.048,neutral,0.975,0.021
+His presentation is scheduled for today.,neutral,Gender pair (male),negative,0.425,-0.273,neutral,0.94,0.056,neutral,0.975,0.02,neutral,0.92,0.079,neutral,0.944,0.052
